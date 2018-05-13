@@ -20,6 +20,8 @@ public class Home extends AppCompatActivity {
         shit = findViewById(R.id.shit);
         shit.setText(id);
         Log.d("2:", "onResponse: "+id);
+        Intent yallabeena = new Intent(Home.this,AllMembers.class);
+        startActivity(yallabeena);
 
     }
 }
