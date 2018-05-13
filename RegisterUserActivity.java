@@ -88,7 +88,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                             person= response;
                             String ID="";
                             try {
-                                ID = person.getString("_id");
+                                ID = person.getJSONObject("user").getString("_id");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
