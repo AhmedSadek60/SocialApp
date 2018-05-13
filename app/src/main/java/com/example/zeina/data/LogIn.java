@@ -2,8 +2,6 @@ package com.amma.projectds;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.nfc.Tag;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -23,7 +20,7 @@ import com.jacksonandroidnetworking.JacksonParserFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity {
+public class LogIn extends AppCompatActivity {
 
 
     EditText userEmailEditText, userPasswordEditText;
@@ -36,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
         AndroidNetworking.initialize(getApplicationContext());
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
         userEmailEditText = findViewById(R.id.emailLoginEditText);
@@ -50,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         createAccountTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, RegisterUserActivity.class));
+                startActivity(new Intent(LogIn.this, RegisterUserActivity.class));
             }
         });
 
@@ -91,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             // do anything with response
-                            Intent moveToHome = new Intent(MainActivity.this,Home.class);
+                            Intent moveToHome = new Intent(LogIn.this,Home.class);
                             moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                             person= response;
@@ -110,14 +107,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onError(ANError error) {
                             // handle error
-                            Toast.makeText(MainActivity.this, "unable to login user", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LogIn.this, "unable to login user", Toast.LENGTH_LONG).show();
                             mProgressDialog.dismiss();
                         }
                     });
 
         }else
         {
-            Toast.makeText(MainActivity.this, "please enter email and password", Toast.LENGTH_LONG).show();
+            Toast.makeText(LogIn.this, "please enter email and password", Toast.LENGTH_LONG).show();
             mProgressDialog.dismiss();
         }
 
