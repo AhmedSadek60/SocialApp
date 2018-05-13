@@ -28,6 +28,13 @@
         android:text="@string/self_destruct" />
 
     <Button
+        android:id="@+id/newsFeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="newsFeed" />
+
+    <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

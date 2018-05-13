@@ -48,8 +48,16 @@ public class MainActivity extends AppCompatActivity {
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
         Button button = findViewById(R.id.button_get);
         Button secondPage = findViewById(R.id.button4);
+        Button newsfeedButton = findViewById(R.id.newsFeed);
      //   final TextView data_text = findViewById(R.id.data_textView);
 
+
+        newsfeedButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent myIntent = new Intent(v.getContext(), NewsFeed.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
