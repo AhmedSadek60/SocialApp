@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AllMembers extends AppCompatActivity {
 
@@ -68,8 +69,10 @@ public class AllMembers extends AppCompatActivity {
                                 user.name = arr.getJSONObject(i).getString("name");
                                 user.picture = arr.getJSONObject(i).getString("profileImage");
                                 Log.d("elarray", "onResponse: "+user.getID());
+                                user.numberOfFollowers = arr.getJSONObject(i).getJSONArray("followers").length();
                                 allMembers.add(user);
                             }
+                            Collections.sort(allMembers);
 
                             UserAdapter adapter=new UserAdapter(AllMembers.this, allMembers);
                             allMembersRecyclerView.setAdapter(adapter );

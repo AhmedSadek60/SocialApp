@@ -1,10 +1,13 @@
 package com.amma.projectds;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
-public class User {
+public class User implements Comparable {
     String name, email, picture, mobile, ID, bio;
     ArrayList<User> following, followers;
+    int numberOfFollowers;
 
     public User(String _name, String _email, String _picture, String _mobile
                 , String _ID, String _bio, ArrayList<User> _following, ArrayList<User> _followers)
@@ -17,6 +20,7 @@ public class User {
         bio = _bio;
         followers = _followers;
         following = _following;
+
     }
 
     public User(){}
@@ -52,4 +56,12 @@ public class User {
         return ID;
     }
 
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+
+        int compareFollowers=((User)o).numberOfFollowers;
+        /* For Ascending order*/
+        return compareFollowers-this.numberOfFollowers;
+    }
 }
