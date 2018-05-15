@@ -65,10 +65,10 @@ public class AllMembers extends AppCompatActivity {
                             arr = response.getJSONArray("users");
                             for (int i = 0; i<userCount; i++) {
                                 User user = new User();
-                                user.ID = arr.getJSONObject(i).getString("_id");
-                                user.name = arr.getJSONObject(i).getString("name");
-                                user.picture = arr.getJSONObject(i).getString("profileImage");
-                                Log.d("elarray", "onResponse: "+user.getID());
+                                user.ID = arr.getJSONObject(i).getJSONObject("user").getString("_id");
+                                user.name = arr.getJSONObject(i).getJSONObject("user").getString("name");
+                                user.picture = "http://64.52.86.76:5000/"+arr.getJSONObject(i).getJSONObject("user").getString("profileImage");
+                                Log.d("elarray", "onResponse: "+user.getPicture());
                                 user.numberOfFollowers = arr.getJSONObject(i).getJSONArray("followers").length();
                                 allMembers.add(user);
                             }
