@@ -61,6 +61,9 @@ public class Post implements Parcelable{
 
 
     protected Post(Parcel in) {
+        postID = in.readString();
+        postPic = in.readString();
+        userID = in.readString();
 //      picture = in.readParcelable(Bitmap.class.getClassLoader());
         context = in.readString();
         userName = in.readString();
@@ -101,10 +104,12 @@ public class Post implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
 //      parcel.writeParcelable(picture, i);
+        parcel.writeString(postID);
+        parcel.writeString(postPic);
+        parcel.writeString(userID);
         parcel.writeString(context);
         parcel.writeString(userName);
         parcel.writeString(userPic);
-        parcel.writeString(postID);
         parcel.writeTypedList(post_comments);
     }
 }
