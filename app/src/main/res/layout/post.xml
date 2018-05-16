@@ -10,9 +10,11 @@
 
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="220dp"
         android:layout_gravity="center"
-        android:layout_margin="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="2dp"
         android:padding="5dp"
         app:cardCornerRadius="4dp">
 
@@ -32,7 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@mipmap/like" />
+                    />
 
                 <TextView
                     android:id="@+id/Name"
@@ -41,10 +43,9 @@
                     android:layout_margin="5dp"
                     android:layout_weight="4"
                     android:paddingLeft="5dp"
-                    android:text="@string/Name"
                     android:textAlignment="textStart"
                     android:textColor="@color/Name_Color"
-                    android:textSize="40px" />
+                    android:textSize="45px" />
 
 
             </LinearLayout>
@@ -57,7 +58,7 @@
                 android:layout_weight="3"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/comment" />
+                 />
 
             <TextView
                 android:id="@+id/Post_Text"
@@ -68,26 +69,32 @@
                 android:textSize="30px"/>
 
             <LinearLayout
-
                 android:id="@+id/Bottom_Section"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                >
 
-                <ImageButton
+                <TextView
+                    android:id="@+id/likeCounter"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textSize="20dp"
+                    android:paddingBottom="5dp" />
+
+                <Button
                     android:id="@+id/Like"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@mipmap/like" />
-
-                <ImageButton
-                    android:id="@+id/Comment"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@mipmap/comment" />
+                    android:layout_weight="4"
+                    android:text="Like"/>
 
             </LinearLayout>
         </LinearLayout>

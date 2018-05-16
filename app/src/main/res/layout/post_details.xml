@@ -27,20 +27,19 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/Profile_Picture"
+                    android:id="@+id/Pro_Pic"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@mipmap/like" />
+                     />
 
                 <TextView
-                    android:id="@+id/Name"
+                    android:id="@+id/user_Name"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:layout_weight="4"
                     android:paddingLeft="5dp"
-                    android:text="@string/Name"
                     android:textAlignment="textStart"
                     android:textColor="@color/Name_Color"
                     android:textSize="40px" />
@@ -56,7 +55,7 @@
                 android:layout_weight="3"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/comment" />
+                />
 
             <TextView
                 android:id="@+id/Post_Text"
@@ -74,19 +73,19 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <TextView
                     android:id="@+id/Like"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:src="@mipmap/like" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/Comment"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@mipmap/comment" />
+                    android:layout_weight="4"
+                     />
 
             </LinearLayout>
 
@@ -95,14 +94,46 @@
 
 
     </android.support.v7.widget.CardView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal"
+
+        >
+
+    <EditText
+        android:id="@+id/comment_field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_gravity="center"
+        android:maxLines="5"
+        android:padding="5dp"
+        />
+        <Button
+            android:id="@+id/Comment_Button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:layout_marginLeft="5dp"
+            android:text="Comment"/>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comment_area"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="211dp"
         android:layout_gravity="center"
-        android:layout_margin="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:padding="5dp"
-        app:cardCornerRadius="4dp">
-    </android.support.v7.widget.RecyclerView>
+        app:cardCornerRadius="4dp"></android.support.v7.widget.RecyclerView>
+
 
 </LinearLayout>

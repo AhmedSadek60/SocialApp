@@ -9,18 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
     ArrayList<Post> myDataSet = new ArrayList<Post>();
     Context context;
-
     // e3ml constructor lel adapter hena 3shan tb3at feh l array mn l main activity
-    public PostsAdapter (Context context, ArrayList<Post> dat)
+    public PostsAdapter (Context context, ArrayList<Post> data)
     {
         this.context = context;
-        myDataSet=dat;
+        myDataSet=data;
     }
 
 // da constructor
@@ -37,7 +38,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         // hamada msh bttktb asln w
 
@@ -45,7 +46,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         // set l values fel design objects mn l array
         holder.textView.setText(myDataSet.get(position).getContext());
-        holder.imageView.setImageBitmap(myDataSet.get(position).getPicture());
+        Picasso.get().load("http://178.62.119.179:5000/"+myDataSet.get(position).getPostPic()).placeholder(R.mipmap.comment).into(holder.imageView);
+        Picasso.get().load("http://178.62.119.179:5000/"+ myDataSet.get(position).getUserPic()).placeholder(R.mipmap.like).into(holder.userPic);
+        holder.userName.setText(myDataSet.get(position).getUserName());
+        holder.likeCounter.setText(myDataSet.get(position).getNumOfLikes());
+
+
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -53,16 +59,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             public void onClick(View view) {
                 Intent intent = new Intent(context, PostDetails.class);
                 intent.putExtra("post", myDataSet.get(holder.getAdapterPosition()));
+               // intent.putParcelableArrayListExtra("comment",myDataSet.get(holder.getPost_comments()));
                 context.startActivity(intent);
             }
         });
     }
-//bycrash
-    //unmute 3ndak :D
+
     @Override
     public int getItemCount() {
-        return myDataSet.size();//array size
-        // bs kda :v
+        return myDataSet.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,11 +75,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         // w hna htrbot kol item bel id bta3o zy mbt3ml fel activity 3adi.
         public ImageView imageView;
         public TextView textView;
+        public ImageView userPic;
+        public TextView userName;
+        public TextView likeCounter;
         public ViewHolder(View itemView) {
             super(itemView);
              imageView = itemView.findViewById(R.id.Post_Picture);
              textView = itemView.findViewById(R.id.Post_Text);
-
+             userPic = itemView.findViewById(R.id.Profile_Picture);
+            userName = itemView.findViewById(R.id.Name);
+            likeCounter = itemView.findViewById(R.id.likeCounter);
         }
     }
 }

@@ -8,42 +8,51 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/Home_Button"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button" />
+            android:textSize="18dp"
+            android:padding="0dp"
+            android:text="Home" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/Profile_Button"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button" />
+            android:textSize="18dp"
+            android:padding="0dp"
+            android:text="Profile" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/Chat_Button"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button" />
+            android:textSize="18dp"
+            android:padding="0dp"
+            android:text="Chat" />
 
     </LinearLayout>
     <android.support.v7.widget.CardView
 
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="130dp"
         android:layout_gravity="center"
-        android:layout_margin="15dp"
-        android:padding="5dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="2dp"
         app:cardCornerRadius="4dp">
 
         <LinearLayout
@@ -74,32 +83,36 @@
                     android:text="@string/Name"
                     android:textAlignment="textStart"
                     android:textColor="@color/Name_Color"
-                    android:textSize="40px" />
+                    android:textSize="45px" />
 
 
             </LinearLayout>
-            <TextView
+            <EditText
                 android:id="@+id/Post_Text"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:textSize="30px"/>
+                android:textSize="20dp"/>
 
             <LinearLayout
 
                 android:id="@+id/Bottom_Section"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/getPic"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:src="@mipmap/like" />
+                    android:layout_weight="3"
+                    android:src="@mipmap/like"
+                    android:text="Picture"
+                    android:textAllCaps="false"
+                    />
 
                 <ImageView
                     android:id="@+id/postimage"
@@ -111,9 +124,10 @@
                     android:id="@+id/makePost"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:src="@mipmap/comment"
-                    android:text="post" />
+                    android:text="Post"
+                    android:textAllCaps="false"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -123,6 +137,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/List_Of_Posts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"/>
 
 </LinearLayout>

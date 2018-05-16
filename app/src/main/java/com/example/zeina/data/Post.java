@@ -5,21 +5,69 @@ import android.graphics.Picture;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Post implements Parcelable{
 
-    Bitmap picture;
+    String postID;
     String context;
-    public String PersonName;
-    String PersonPic;
-    int picTest;
+    String postPic;
+    String userID;
+    String userName;
+    String userPic;
+
+    Like like;
+    int numOfLikes;
+
+    public ArrayList<Comment> post_comments = new ArrayList<Comment>();
+
+    public ArrayList<String> likers_id = new ArrayList<String>();
+
 
     public  Post(){}
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public ArrayList<Comment> getPost_comments() {
+        return post_comments;
+    }
+
+    public ArrayList<String> getLikers_id() {
+        return likers_id;
+    }
+
+    public String getNumOfLikes() {
+        return String.valueOf(numOfLikes);
+    }
+
+    public String getPostPic() {
+        return postPic;
+    }
+
+    public String getUserPic() {
+        return userPic;
+    }
+
+    public String getPostID() {
+        return postID;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+
     protected Post(Parcel in) {
-//        picture = in.readParcelable(Bitmap.class.getClassLoader());
+//      picture = in.readParcelable(Bitmap.class.getClassLoader());
         context = in.readString();
-        PersonName = in.readString();
-        PersonPic = in.readString();
-        picTest = in.readInt();
+        userName = in.readString();
+        userPic = in.readString();
+
+        in.readTypedList(post_comments, Comment.CREATOR);
+
     }
 
     public static final Creator<Post> CREATOR = new Creator<Post>() {
@@ -34,16 +82,13 @@ public class Post implements Parcelable{
         }
     };
 
-    void Post(Bitmap pic, String cont, String name, String profile_pic){
-        picture=pic;
+    void Post(String cont, String name, String profile_pic){
         context=cont;
-        PersonName=name;
-        PersonPic=profile_pic;
+        userName=name;
+        userPic=profile_pic;
     }
 
-    Bitmap getPicture(){
-        return picture;
-    }
+
     String getContext(){
         return context;
     }
@@ -55,10 +100,11 @@ public class Post implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-//        parcel.writeParcelable(picture, i);
+//      parcel.writeParcelable(picture, i);
         parcel.writeString(context);
-        parcel.writeString(PersonName);
-        parcel.writeString(PersonPic);
-        parcel.writeInt(picTest);
+        parcel.writeString(userName);
+        parcel.writeString(userPic);
+        parcel.writeString(postID);
+        parcel.writeTypedList(post_comments);
     }
 }
