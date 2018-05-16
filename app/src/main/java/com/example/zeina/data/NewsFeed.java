@@ -1,7 +1,13 @@
 package com.example.zeina.data;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,7 +15,14 @@ import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,12 +34,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
+import com.androidnetworking.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -46,13 +64,28 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class NewsFeed extends AppCompatActivity {
 
     public  ArrayList<Post> dataarr = new ArrayList<Post>();
-    Bitmap[] pic_src = new Bitmap[5];
-    int[] txt_src=new int[5];
     private static final int PICK_PHOTO_FOR_AVATAR = 0;
     String TAG = "Success";
     String user_id="5afa2cc88024b6bbc5d01fad";
     //String user_id="5afa2de18024b6bbc5d01fb1";
+    int flag=0;
+    File newfile = null;
+    TextView post_text;
+    File sourceFile;
 
+    private int PICK_IMAGE_REQUEST = 1;
+
+    //storage permission code
+    private static final int STORAGE_PERMISSION_CODE = 123;
+
+    //Bitmap to get image from gallery
+    private Bitmap bitmap;
+
+    //Uri to store the image uri
+    private Uri filePath;
+    private String imgPath;
+
+    ImageView imageView;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_feed);
@@ -63,6 +96,8 @@ public class NewsFeed extends AppCompatActivity {
         Button home = findViewById(R.id.Home_Button);
         Button profile = findViewById(R.id.Profile_Button);
         Button Chat = findViewById(R.id.Chat_Button);
+        post_text=findViewById(R.id.Post_Text);
+        imageView=findViewById(R.id.postimage);
         posts_data(user_id);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -72,7 +107,8 @@ public class NewsFeed extends AppCompatActivity {
 
         pick_image.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               pickImage();
+               //pickImage();
+                requestStoragePermission();
             }
         });
         makepost.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +139,7 @@ public class NewsFeed extends AppCompatActivity {
         });
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         InputStream inputStream=new InputStream() {
@@ -130,7 +166,7 @@ public class NewsFeed extends AppCompatActivity {
                 e.printStackTrace();
             }
             //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
-            File newfile = null;
+
             try {
                 newfile = whenConvertingInProgressToFile_thenCorrect(inputStream);
             } catch (IOException e) {
@@ -138,17 +174,71 @@ public class NewsFeed extends AppCompatActivity {
             }
             //write here the code of posting image
             }
-        }
+        }*/
 
     public void makePost(){
-        EditText Post_text = findViewById(R.id.Post_Text);
-        String Post_txt = Post_text.getText().toString();
-        //send text
+      //  EditText Post_text = findViewById(R.id.Post_Text);
+      //  String Post_txt = Post_text.getText().toString();
+
+        if(flag==1){
+            sourceFile = new File(imgPath);
+            //post with image
+            AndroidNetworking.upload("http://178.62.119.179:5000/api/newPost")
+                    .addMultipartFile("image",sourceFile)
+                    .addMultipartParameter("text", post_text.getText().toString())
+                    .addMultipartParameter("id","5af8bdf7eece608fd17e48c7")
+                    .setTag("uploadTest")
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .setUploadProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void onProgress(long bytesUploaded, long totalBytes) {
+                            // do anything with progress
+                        }
+                    })
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // do anything with response
+                            Toast.makeText(getApplicationContext(),"Posted",LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onError(ANError error) {
+                            // handle error
+                            Log.i(TAG, "onError: "+error.toString());
+                        }
+                    });
+            flag=0;
+        }
+        else {
+            //post without image
+            AndroidNetworking.post("http://178.62.119.179:5000/api/post/newPost")
+                    .addBodyParameter("text", post_text.getText().toString())
+                    .addBodyParameter("id","5af8bdf7eece608fd17e48c7")
+                    .setTag("post")
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // do anything with response
+                            //Toast.makeText(getApplicationContext(),"Posted",LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onError(ANError error) {
+                            // handle error
+                            Log.i(TAG, "onError: "+error.toString());
+                        }
+                    });
+
+
+        }
     }
     public void pickImage() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
+        flag=1;
     }
 
 
@@ -164,8 +254,6 @@ public class NewsFeed extends AppCompatActivity {
         }
         return targetFile;
     }
-
-
 
     void posts_data(String user_id){
         AndroidNetworking.get("http://178.62.119.179:5000/api/post/getNewsFeed/"+user_id)
@@ -248,6 +336,7 @@ public class NewsFeed extends AppCompatActivity {
                     }
                 });
     }
+
     public static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
 
@@ -269,38 +358,190 @@ public class NewsFeed extends AppCompatActivity {
         drawable.draw(canvas);
         return bitmap;
     }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (filePath != null){
+            imageView.setImageURI(filePath);
+        }
+    }
+
+    private void uploadImg(){
+
+        sourceFile = new File(imgPath);
+
+        ANRequest.MultiPartBuilder multiPartBuilder = AndroidNetworking.upload("API_URL");
+
+        multiPartBuilder
+                .addMultipartFile("image", sourceFile)
+                .setTag("uploadImg")
+                .setPriority(Priority.HIGH)
+                .build()
+                .setUploadProgressListener(new UploadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesUploaded, long totalBytes) {
+                        // do anything with progress
+
+                        Log.d("Progress", String.valueOf(bytesUploaded) + " -- " + String.valueOf(totalBytes));
+
+                    }
+                })
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // below code will be executed in the executor provided
+                        // do anything with response
+                        Log.d("Response", response.toString());
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.d("errrr", error.getErrorBody());
+                    }
+                });
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    //Requesting permission
+    private void requestStoragePermission() {
+        flag=1;
+        if (ContextCompat.checkSelfPermission(NewsFeed.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+            showFileChooser();
+            return;
+        }
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(NewsFeed.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //If the user has denied the permission previously your code will come to this block
+            //Here you can explain why you need this permission
+            //Explain here why you need this permission
+            Toast.makeText(NewsFeed.this, "You have to enable storage permission", Toast.LENGTH_SHORT).show();
+        }
+        //And finally ask for the permission
+        ActivityCompat.requestPermissions(NewsFeed.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //Checking the request code of our request
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+
+            //If permission is granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Displaying a toast
+                Toast.makeText(NewsFeed.this, "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
+                showFileChooser();
+            } else {
+                //Displaying another toast if permission is not granted
+                Toast.makeText(NewsFeed.this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+
+            try {
+                imgPath = getPath(NewsFeed.this, data.getData());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            filePath = data.getData();
+            imageView.setImageURI(filePath);
+           // uploadImg();
+        }
+    }
+
+
+    /*
+     * Gets the file path of the given Uri.
+     */
+    @SuppressLint("NewApi")
+    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+        final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;
+        String selection = null;
+        String[] selectionArgs = null;
+        // Uri is different in versions after KITKAT (Android 4.4), we need to
+        // deal with different Uris.
+        if (needToCheckUri && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
+            } else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            } else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("image".equals(type)) {
+                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                selection = "_id=?";
+                selectionArgs = new String[]{ split[1] };
+            }
+        }
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { MediaStore.Images.Media.DATA };
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
 }
-
-
-
-
- /* void fill_txt(){
-        int txt=R.string.Post_Content;
-        for(int x=0;x<5;x++){
-            txt_src[x]=txt;
-        }
-    }
-
-    void fill_pic(){
-            Bitmap d =drawableToBitmap(getResources().getDrawable(R.mipmap.comment));
-            pic_src[0]=d;
-            d =drawableToBitmap(getResources().getDrawable(R.mipmap.like));
-            pic_src[1]=d;
-            d =drawableToBitmap(getResources().getDrawable(R.mipmap.comment));
-            pic_src[2]=d;
-            d =drawableToBitmap(getResources().getDrawable(R.mipmap.like));
-            pic_src[3]=d;
-            d =drawableToBitmap(getResources().getDrawable(R.mipmap.comment));
-            pic_src[4]=d;
-    }
-
-    void fill_Data(){
-        for(int x=0;x<5;x++){
-
-            Post post=new Post();
-            post.picture=pic_src[x];
-            post.context=getResources().getString(txt_src[x]);
-            dat.add(post);
-
-        }
-    }*/

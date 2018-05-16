@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -24,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class PostDetails  extends AppCompatActivity {
 
@@ -125,6 +128,24 @@ public class PostDetails  extends AppCompatActivity {
 
         EditText comment_text = findViewById(R.id.comment_field);
         String Comment_txt = comment_text.getText().toString();
+        AndroidNetworking.post("http://178.62.119.179:5000/api/post/comment")
+                .addBodyParameter("text", Comment_txt)
+                .addBodyParameter("userID","5afa2cfe8024b6bbc5d01faf")
+                .addBodyParameter("postID","5afa41ec2e19eebf974403a8")
+                .setTag("post")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Toast.makeText(getApplicationContext(),"Commented",LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
 
         return null;
     }
